@@ -22,7 +22,8 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 # Define Variables
 load_dotenv()
-CSVData = os.getenv('CSVData')
+#CSVData = os.getenv('CSVData')
+CSVData = os.getenv('CSVOriginal')
 DependentVariable = os.getenv('DependentVariable')
 head_Value = int(os.getenv('Head_Value'))
 testSize = float(os.getenv('test_size'))
@@ -36,6 +37,13 @@ Setup Reusable Functions
 def loadAndExtractData():
     global dataSetUp
     dataSetUp = pd.read_csv(CSVData)
+    keepcolumns = ['cost_yr','median_income','affordability_ratio', 'ave_fam_size']
+    dataSetUp =dataSetUp.filter(keepcolumns)
+    for keep in keepcolumns:
+        dataSetUp = dataSetUp[dataSetUp[keep].notna()]
+    dataSetUp = dataSetUp[dataSetUp['median_income'] >= 8000]
+    dataSetUp.to_csv('cleaned.csv', index=False)
+
 
 # Print Info
 def showDataHeadAndInfo(headCount):
@@ -51,6 +59,7 @@ def preProcessing():
     bins = (0, .2, 3)
     group_names = ['Cant Afford', 'Can Afford']
     dataSetUp[DependentVariable] = pd.cut(dataSetUp[DependentVariable], bins, labels=group_names)
+    dataSetUp.to_csv('test.csv')
     label_quality = LabelEncoder()
     dataSetUp[DependentVariable] = label_quality.fit_transform(dataSetUp[DependentVariable])
     showDataHeadAndInfo(head_Value)
