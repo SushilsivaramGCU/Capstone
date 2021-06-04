@@ -55,9 +55,6 @@ def showDataHeadAndInfo(headCount):
 
 # preProcessing
 def preProcessing():
-    histmedian_income =dataSetUp['median_income'].plot.hist(bins=5, alpha=0.5)
-    hist_avg_fam =dataSetUp['ave_fam_size'].plot.hist(bins=5, alpha=0.5)
-
     bins = (0, .2, 3)
     group_names = ['Cant Afford', 'Can Afford']
     dataSetUp[DependentVariable] = pd.cut(dataSetUp[DependentVariable], bins, labels=group_names)
@@ -66,8 +63,53 @@ def preProcessing():
     dataSetUp[DependentVariable] = label_quality.fit_transform(dataSetUp[DependentVariable])
     showDataHeadAndInfo(head_Value)
     print(dataSetUp[DependentVariable].value_counts())
+    plt.figure()
     sns.set_theme(style="darkgrid")
     sns.countplot(y=dataSetUp[DependentVariable])
+
+#plotting
+def plotting(state):
+    plt.figure()
+    histmedian_income = dataSetUp['median_income'].plot.hist(bins=25, grid=True, rwidth=0.9, color='#607c8e')
+    plt.title(f'Histogram of Median Income {state}')
+    plt.xlabel('Median Income in $')
+    plt.ylabel('Count')
+    plt.grid(axis='y', alpha=0.5)
+    histmedian_income.figure.savefig(f'.\outputs\histMedianIncome{state}.png')
+
+    plt.figure()
+    hist_avg_fam = dataSetUp['ave_fam_size'].plot.hist(bins=25,  grid=True, rwidth=0.9, color='#607c8e')
+    plt.title(f'Histogram of Family Size {state}')
+    plt.xlabel('Family Size')
+    plt.ylabel('Count')
+    plt.grid(axis='y', alpha=0.5)
+    hist_avg_fam.figure.savefig(f'.\outputs\histavgFamsize{state}.png')
+
+    plt.figure()
+    hist_Cost_yr = dataSetUp['cost_yr'].plot.hist(bins=25, grid=True, rwidth=0.9, color='#607c8e')
+    plt.title(f'Histogram of Yearly Cost of Food $ {state}')
+    plt.xlabel('Yearly Cost $')
+    plt.ylabel('Count')
+    plt.grid(axis='y', alpha=0.5)
+    hist_Cost_yr.figure.savefig(f'.\outputs\histCost{state}.png')
+
+    plt.figure()
+    scattermedian_income = dataSetUp.plot.scatter(c='DarkBlue', x='median_income', y = 'cost_yr' )
+    plt.title(f'scatterogram of Median Income vs Expenditure {state}')
+    plt.xlabel('Median Income in $')
+    plt.ylabel('cost_yr')
+    plt.grid(axis='y', alpha=0.5)
+    scattermedian_income.figure.savefig(f'.\outputs\scatterMedianIncomeVSExpenditure{state}.png')
+
+    plt.figure()
+    scattermedian_income = dataSetUp.plot.scatter(c='DarkBlue', x='ave_fam_size', y = 'cost_yr' )
+    plt.title(f'scatterogram of Family Size vs Expenditure {state}')
+    plt.xlabel('Family Size')
+    plt.ylabel('cost_yr')
+    plt.grid(axis='y', alpha=0.5)
+    scattermedian_income.figure.savefig(f'.\outputs\scatterFamSizeVSExpenditure{state}.png')
+    plt.show()
+
 
 
 # Load Data from CSV
@@ -76,8 +118,14 @@ loadAndExtractData()
 # Print Info
 showDataHeadAndInfo(head_Value)
 
+# Exploratory plotting
+plotting("BeforeProcessing")
+
+
 # preProcessing
 preProcessing()
+plotting("PostProcessing")
+
 
 '''
 seperate dependent and independent variables
@@ -164,4 +212,4 @@ while ynew == 0:
 print(f"***********************************************-- "
       f"We suggest you reduce your annual expenditure to ${Xnew[0][0]} for family counts of {Xnew[0][2]} and income of ${Xnew[0][1]}"
       f" --***********************************************")
-plt.show()
+
