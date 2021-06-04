@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-__author__ = "Sushil Sivaram, Megha Baloon"
+__author__ = "Sushil Sivaram, Megha Gubbala"
 __copyright__ = "N/A"
 __credits__ = ["Isac Artzi", "Dinesh Sthapit", "Ken Ferrell", "James Dzikunu", "Tracy Roth", "Renee Morales"]
 __license__ = "ECL"
-__maintainer__ = "Sushil Sivaram, Megha Baloon"
+__maintainer__ = "Sushil Sivaram, Megha Gubbala"
 __email__ = "SushilSivaram@gmail.com"
 __status__ = "Development"
 
@@ -51,11 +51,13 @@ def showDataHeadAndInfo(headCount):
     print(dataSetUp.head(headCount))
     print("**********")
     print("Showing info of dataset")
-
     print(dataSetUp.describe(include='all'))
 
 # preProcessing
 def preProcessing():
+    histmedian_income =dataSetUp['median_income'].plot.hist(bins=5, alpha=0.5)
+    hist_avg_fam =dataSetUp['ave_fam_size'].plot.hist(bins=5, alpha=0.5)
+
     bins = (0, .2, 3)
     group_names = ['Cant Afford', 'Can Afford']
     dataSetUp[DependentVariable] = pd.cut(dataSetUp[DependentVariable], bins, labels=group_names)
@@ -84,7 +86,7 @@ seperate dependent and independent variables
 X = dataSetUp.drop(DependentVariable, axis=1)
 y = dataSetUp[DependentVariable]
 
-# Train and test with random seed 42
+# Train and test with random seed
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=testSize, random_state=randomstate)
 
 # Optimizing with standardScaler to minimize bias and normalize values
@@ -103,6 +105,15 @@ for model, model_instantiation in dict_classifiers.items():
     model = model_instantiation
     model.fit(X_train, y_train)
     y_score = model.predict(X_test)
+
+    #todo
+    # notes from Class
+    # Summarize model.fit(X_train, y_train)
+    # Find P values if P greater than .05 discard variable
+    # Gains and Lift Chart
+    # multilollenearity VIF calculator
+
+
     confusion_Matrix = confusion_matrix(y_test, y_score)
     cm = accuracy_score(y_test, y_score)
     print(f"Printing Model details for : {model}\n"
