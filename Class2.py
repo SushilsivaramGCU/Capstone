@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-__author__ = "Sushil Sivaram, Megha Gubbala"
+__author__ = "Sushil Sivaram, Megha Gubbala", "Sylvia Nanyangwe"
 __copyright__ = "N/A"
 __credits__ = ["Isac Artzi", "Dinesh Sthapit", "Ken Ferrell", "James Dzikunu", "Tracy Roth", "Renee Morales"]
 __license__ = "ECL"
-__maintainer__ = "Sushil Sivaram, Megha Gubbala"
+__maintainer__ = "Sushil Sivaram, Megha Gubbala", "Sylvia Nanyangwe"
 __email__ = "SushilSivaram@gmail.com"
 __status__ = "Development"
 
@@ -22,6 +22,7 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 # Define Variables
 load_dotenv()
+
 # CSVData = os.getenv('CSVData')
 CSVData = os.getenv('CSVOriginal')
 DependentVariable = os.getenv('DependentVariable')
@@ -56,18 +57,45 @@ def showDataHeadAndInfo(headCount):
     print(dataSetUp['ave_fam_size'])
 
 def plotting():
-    histmedian_income = dataSetUp['median_income'].plot.hist(bins=50, alpha=0.5)
-    histmedian_income.figure.savefig('histMedianIncome.png')
-    hist_avg_fam = dataSetUp['ave_fam_size'].plot.hist(bins=5, alpha=0.05)
-    hist_avg_fam.figure.savefig('histavgFamsize.png')
-    hist_Cost_yr = dataSetUp['cost_yr'].plot.hist(bins=50, alpha=0.05)
-    hist_Cost_yr.figure.savefig('histCost.png')
+    plt.figure()
+    histmedian_income = dataSetUp['median_income'].plot.hist(bins=25, grid=True, rwidth=0.9, color='#607c8e')
+    plt.title('Histogram of Median Income')
+    plt.xlabel('Median Income in $')
+    plt.ylabel('Count')
+    plt.grid(axis='y', alpha=0.5)
+    histmedian_income.figure.savefig('.\outputs\histMedianIncome.png')
 
+    plt.figure()
+    hist_avg_fam = dataSetUp['ave_fam_size'].plot.hist(bins=25,  grid=True, rwidth=0.9, color='#607c8e')
+    plt.title('Histogram of Family Size')
+    plt.xlabel('Family Size')
+    plt.ylabel('Count')
+    plt.grid(axis='y', alpha=0.5)
+    hist_avg_fam.figure.savefig('.\outputs\histavgFamsize.png')
 
+    plt.figure()
+    hist_Cost_yr = dataSetUp['cost_yr'].plot.hist(bins=25, grid=True, rwidth=0.9, color='#607c8e')
+    plt.title('Histogram of Yearly Cost of Food $')
+    plt.xlabel('Yearly Cost $')
+    plt.ylabel('Count')
+    plt.grid(axis='y', alpha=0.5)
+    hist_Cost_yr.figure.savefig('.\outputs\histCost.png')
 
-    #hist_Cost_yr.savfig('cost_yr.pdf')
+    plt.figure()
+    scattermedian_income = dataSetUp.plot.scatter(c='DarkBlue', x='median_income', y = 'cost_yr' )
+    plt.title('scatterogram of Median Income vs Expenditure')
+    plt.xlabel('Median Income in $')
+    plt.ylabel('cost_yr')
+    plt.grid(axis='y', alpha=0.5)
+    scattermedian_income.figure.savefig('.\outputs\scatterMedianIncomeVSExpenditure.png')
 
-
+    plt.figure()
+    scattermedian_income = dataSetUp.plot.scatter(c='DarkBlue', x='ave_fam_size', y = 'cost_yr' )
+    plt.title('scatterogram of Family Size vs Expenditure')
+    plt.xlabel('Family Size')
+    plt.ylabel('cost_yr')
+    plt.grid(axis='y', alpha=0.5)
+    scattermedian_income.figure.savefig('.\outputs\scatterFamSizeVSExpenditure.png')
 
 # Load Data from CSV
 loadAndExtractData()
