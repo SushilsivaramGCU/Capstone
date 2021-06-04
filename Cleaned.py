@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-__author__ = "Sushil Sivaram, Megha Gubbala"
+__author__ = "Sushil Sivaram, Megha Gubbala", "Sylvia Nanyangwe"
 __copyright__ = "N/A"
 __credits__ = ["Isac Artzi", "Dinesh Sthapit", "Ken Ferrell", "James Dzikunu", "Tracy Roth", "Renee Morales"]
 __license__ = "ECL"
-__maintainer__ = "Sushil Sivaram, Megha Gubbala"
+__maintainer__ = "Sushil Sivaram, Megha Gubbala", "Sylvia Nanyangwe"
 __email__ = "SushilSivaram@gmail.com"
 __status__ = "Development"
 
@@ -111,14 +111,14 @@ for model, model_instantiation in dict_classifiers.items():
     # Summarize model.fit(X_train, y_train)
     # Find P values if P greater than .05 discard variable
     # Gains and Lift Chart
-    # multilollenearity VIF calculator
+    # multicollinearity VIF calculator
 
 
     confusion_Matrix = confusion_matrix(y_test, y_score)
     cm = accuracy_score(y_test, y_score)
     print(f"Printing Model details for : {model}\n"
           f"Printing Confusion Matrix\n{confusion_Matrix}\n"
-          f"Priniting Classification Report\n {classification_report(y_test, y_score)}\n"
+          f"Printing Classification Report\n {classification_report(y_test, y_score)}\n"
           f"****\n"
           f"End of Model\n"
           f"****\n")
