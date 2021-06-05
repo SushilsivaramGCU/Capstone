@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-__author__ = "Sushil Sivaram, Megha Baloon"
+__author__ = "Sushil Sivaram, Megha Gubbala", "Sylvia Nanyangwe"
 __copyright__ = "N/A"
 __credits__ = ["Isac Artzi", "Dinesh Sthapit", "Ken Ferrell", "James Dzikunu", "Tracy Roth", "Renee Morales"]
 __license__ = "ECL"
-__maintainer__ = "Sushil Sivaram, Megha Baloon"
+__maintainer__ = "Sushil Sivaram, Megha Gubbala", "Sylvia Nanyangwe"
 __email__ = "SushilSivaram@gmail.com"
 __status__ = "Development"
 
@@ -51,7 +51,6 @@ def showDataHeadAndInfo(headCount):
     print(dataSetUp.head(headCount))
     print("**********")
     print("Showing info of dataset")
-
     print(dataSetUp.describe(include='all'))
 
 # preProcessing
@@ -64,8 +63,53 @@ def preProcessing():
     dataSetUp[DependentVariable] = label_quality.fit_transform(dataSetUp[DependentVariable])
     showDataHeadAndInfo(head_Value)
     print(dataSetUp[DependentVariable].value_counts())
+    plt.figure()
     sns.set_theme(style="darkgrid")
     sns.countplot(y=dataSetUp[DependentVariable])
+
+#plotting
+def plotting(state):
+    plt.figure()
+    histmedian_income = dataSetUp['median_income'].plot.hist(bins=25, grid=True, rwidth=0.9, color='#607c8e')
+    plt.title(f'Histogram of Median Income {state}')
+    plt.xlabel('Median Income in $')
+    plt.ylabel('Count')
+    plt.grid(axis='y', alpha=0.5)
+    histmedian_income.figure.savefig(f'.\outputs\histMedianIncome{state}.png')
+
+    plt.figure()
+    hist_avg_fam = dataSetUp['ave_fam_size'].plot.hist(bins=25,  grid=True, rwidth=0.9, color='#607c8e')
+    plt.title(f'Histogram of Family Size {state}')
+    plt.xlabel('Family Size')
+    plt.ylabel('Count')
+    plt.grid(axis='y', alpha=0.5)
+    hist_avg_fam.figure.savefig(f'.\outputs\histavgFamsize{state}.png')
+
+    plt.figure()
+    hist_Cost_yr = dataSetUp['cost_yr'].plot.hist(bins=25, grid=True, rwidth=0.9, color='#607c8e')
+    plt.title(f'Histogram of Yearly Cost of Food $ {state}')
+    plt.xlabel('Yearly Cost $')
+    plt.ylabel('Count')
+    plt.grid(axis='y', alpha=0.5)
+    hist_Cost_yr.figure.savefig(f'.\outputs\histCost{state}.png')
+
+    plt.figure()
+    scattermedian_income = dataSetUp.plot.scatter(c='DarkBlue', x='median_income', y = 'cost_yr' )
+    plt.title(f'scatterogram of Median Income vs Expenditure {state}')
+    plt.xlabel('Median Income in $')
+    plt.ylabel('cost_yr')
+    plt.grid(axis='y', alpha=0.5)
+    scattermedian_income.figure.savefig(f'.\outputs\scatterMedianIncomeVSExpenditure{state}.png')
+
+    plt.figure()
+    scattermedian_income = dataSetUp.plot.scatter(c='DarkBlue', x='ave_fam_size', y = 'cost_yr' )
+    plt.title(f'scatterogram of Family Size vs Expenditure {state}')
+    plt.xlabel('Family Size')
+    plt.ylabel('cost_yr')
+    plt.grid(axis='y', alpha=0.5)
+    scattermedian_income.figure.savefig(f'.\outputs\scatterFamSizeVSExpenditure{state}.png')
+    plt.show()
+
 
 
 # Load Data from CSV
@@ -74,8 +118,14 @@ loadAndExtractData()
 # Print Info
 showDataHeadAndInfo(head_Value)
 
+# Exploratory plotting
+plotting("BeforeProcessing")
+
+
 # preProcessing
 preProcessing()
+plotting("PostProcessing")
+
 
 '''
 seperate dependent and independent variables
@@ -84,7 +134,7 @@ seperate dependent and independent variables
 X = dataSetUp.drop(DependentVariable, axis=1)
 y = dataSetUp[DependentVariable]
 
-# Train and test with random seed 42
+# Train and test with random seed
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=testSize, random_state=randomstate)
 
 # Optimizing with standardScaler to minimize bias and normalize values
@@ -103,11 +153,20 @@ for model, model_instantiation in dict_classifiers.items():
     model = model_instantiation
     model.fit(X_train, y_train)
     y_score = model.predict(X_test)
+
+    #todo
+    # notes from Class
+    # Summarize model.fit(X_train, y_train)
+    # Find P values if P greater than .05 discard variable
+    # Gains and Lift Chart
+    # multicollinearity VIF calculator
+
+
     confusion_Matrix = confusion_matrix(y_test, y_score)
     cm = accuracy_score(y_test, y_score)
     print(f"Printing Model details for : {model}\n"
           f"Printing Confusion Matrix\n{confusion_Matrix}\n"
-          f"Priniting Classification Report\n {classification_report(y_test, y_score)}\n"
+          f"Printing Classification Report\n {classification_report(y_test, y_score)}\n"
           f"****\n"
           f"End of Model\n"
           f"****\n")
@@ -153,4 +212,4 @@ while ynew == 0:
 print(f"***********************************************-- "
       f"We suggest you reduce your annual expenditure to ${Xnew[0][0]} for family counts of {Xnew[0][2]} and income of ${Xnew[0][1]}"
       f" --***********************************************")
-plt.show()
+
