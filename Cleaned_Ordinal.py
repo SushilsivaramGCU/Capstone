@@ -8,6 +8,7 @@ __maintainer__ = "Sushil Sivaram, Megha Gubbala", "Sylvia Nanyangwe"
 __email__ = "SushilSivaram@gmail.com"
 __status__ = "Development"
 
+from matplotlib import pyplot
 from scipy import stats
 import pandas as pd
 import numpy as np
@@ -50,7 +51,7 @@ def loadAndExtractData():
     dataSetUp = pd.read_csv(CSVData)
     datasetupUnprocessed = dataSetUp
     keepcolumns = [#'LL95_affordability_ratio', 'UL95_affordability_ratio',
-                   'cost_yr','median_income','affordability_ratio', 'ave_fam_size']
+                   'race_eth_code','median_income','affordability_ratio', 'ave_fam_size']
     dataSetUp =dataSetUp.filter(keepcolumns)
     for keep in keepcolumns:
         dataSetUp = dataSetUp[dataSetUp[keep].notna()]
@@ -69,7 +70,7 @@ def showDataHeadAndInfo(data,headCount):
 
 # preProcessing
 def preProcessing():
-    bins = (0, .2, 3)
+    bins = (0, .2, 5)
     group_names = ['Cant Afford', 'Can Afford']
     dataSetUp[DependentVariable] = pd.cut(dataSetUp[DependentVariable], bins, labels=group_names)
     dataSetUp.to_csv('test.csv')
@@ -77,9 +78,7 @@ def preProcessing():
     dataSetUp[DependentVariable] = label_quality.fit_transform(dataSetUp[DependentVariable])
     #showDataHeadAndInfo(head_Value)
     print(dataSetUp[DependentVariable].value_counts())
-   # plt.figure()
-   # sns.set_theme(style="darkgrid")
-   # sns.countplot(y=dataSetUp[DependentVariable])
+
 
 #plotting
 def plotting(dataSetUp, state):
@@ -100,29 +99,29 @@ def plotting(dataSetUp, state):
     hist_avg_fam.figure.savefig(f'.\outputs\histavgFamsize{state}.png')
 
     plt.figure()
-    hist_Cost_yr = dataSetUp['cost_yr'].plot.hist(bins=25, grid=True, rwidth=0.9, color='#607c8e')
-    plt.title(f'Histogram of Yearly Cost of Food $ {state}')
-    plt.xlabel('Yearly Cost $')
+    hist_race_eth_name = dataSetUp['race_eth_code'].plot.hist(bins=2, grid=True, rwidth=0.9, color='#607c8e')
+    plt.title(f'Histogram race distribution {state}')
+    plt.xlabel('Race')
     plt.ylabel('Count')
     plt.grid(axis='y', alpha=0.5)
-    hist_Cost_yr.figure.savefig(f'.\outputs\histCost{state}.png')
+    hist_race_eth_name.figure.savefig(f'.\outputs\histCost{state}.png')
 
     plt.figure()
-    scattermedian_income = dataSetUp.plot.scatter(c='DarkBlue', x='median_income', y = 'cost_yr' )
+    scattermedian_income = dataSetUp.plot.scatter(c='DarkBlue', x='median_income', y = 'ave_fam_size' )
     plt.title(f'scatterogram of Median Income vs Expenditure {state}')
     plt.xlabel('Median Income in $')
-    plt.ylabel('cost_yr')
+    plt.ylabel('ave_fam_size')
     plt.grid(axis='y', alpha=0.5)
-    scattermedian_income.figure.savefig(f'.\outputs\scatterMedianIncomeVSExpenditure{state}.png')
+    scattermedian_income.figure.savefig(f'.\outputs\scatterMedianIncomeVSFamilySize{state}.png')
 
     plt.figure()
-    scattermedian_income = dataSetUp.plot.scatter(c='DarkBlue', x='ave_fam_size', y = 'cost_yr' )
-    plt.title(f'scatterogram of Family Size vs Expenditure {state}')
-    plt.xlabel('Family Size')
-    plt.ylabel('cost_yr')
-    plt.grid(axis='y', alpha=0.5)
-    scattermedian_income.figure.savefig(f'.\outputs\scatterFamSizeVSExpenditure{state}.png')
-    plt.show()
+   # scattermedian_income = dataSetUp.plot.scatter(c='DarkBlue', x='ave_fam_size', y = 'race_eth_code' )
+   # plt.title(f'scatterogram of Family Size vs Expenditure {state}')
+   # plt.xlabel('Family Size')
+   # plt.ylabel('race_eth_code')
+   # plt.grid(axis='y', alpha=0.5)
+   # scattermedian_income.figure.savefig(f'.\outputs\scatterFamSizeVSExpenditure{state}.png')
+   # plt.show()
 
 def trainDataset():
     global X_train
@@ -138,20 +137,20 @@ def trainDataset():
     X_train = sc.fit_transform(X_train)
     X_test = sc.transform(X_test)
 
-#ef predictorImportance():
-#   X = dataSetUp.drop(DependentVariable, axis=1)
-#   y = dataSetUp[DependentVariable]
-#   model = LogisticRegression()
-#   # fit the model
-#   model.fit(X, y)
-#   importance = model.coef_[0]
-#   # summarize feature importance
-#   for i, v in enumerate(importance):
-#       print('Feature: %0d, Score: %.5f' % (i, v))
-#   # plot feature importance
-#   pyplot.bar([x for x in range(len(importance))], importance)
-#   pyplot.show()
-
+def predictorImportance():
+    X = dataSetUp.drop(DependentVariable, axis=1)
+    y = dataSetUp[DependentVariable]
+    model = LogisticRegression()
+    # fit the model
+    model.fit(X, y)
+    importance = model.coef_[0]
+    # summarize feature importance
+    for i, v in enumerate(importance):
+        print('Feature: %0d, Score: %.5f' % (i, v))
+    # plot feature importance
+    pyplot.bar([x for x in range(len(importance))], importance)
+    pyplot.show()
+from tabulate import tabulate
 
 def vifCheck(dataSetUp):
     # VIF dataframe
@@ -176,13 +175,15 @@ plotting(datasetupUnprocessed , "BeforeProcessing")
 
 
 
+
+
 # preProcessing
 preProcessing()
 showDataHeadAndInfo(dataSetUp,head_Value)
 plotting(dataSetUp, "PostProcessing")
 vifCheck(dataSetUp)
 
-
+predictorImportance()
 
 '''
 seperate dependent and independent variables
@@ -219,15 +220,6 @@ for model, model_instantiation in dict_classifiers.items():
     cm.fit(X_train, y_train)
     cm.score(X_test, y_test)
     cm.show()
-
-    #todo
-    # notes from Class
-    # Summarize model.fit(X_train, y_train) - Done
-    # Find P values if P greater than .05 discard variable
-    # Gains and Lift Chart - Done
-    # multicollinearity VIF calculator
-
-
     confusion_Matrix = confusion_matrix(y_test, y_score)
     cm = accuracy_score(y_test, y_score)
     print(f"Printing Model details for : {model}\n"
@@ -237,18 +229,16 @@ for model, model_instantiation in dict_classifiers.items():
           f"End of Model\n"
           f"****\n")
 
-    mlpc = MLPClassifier(hidden_layer_sizes=(11, 11, 11), max_iter=500,  random_state=randomstate)
-    mlpc.fit(X_train, y_train)
+mlpc = MLPClassifier(hidden_layer_sizes=(11, 11, 11), max_iter=500,  random_state=randomstate)
+mlpc.fit(X_train, y_train)
 
-    Xnew = X_test[[0]]
-    pred_mlpc = mlpc.predict(X_test)
-    ynew = mlpc.predict(Xnew)
-    if ynew == 0:
-        print(f"I am too poor to afford food")
-    else:
-        print(f"I will survive")
-
-
+Xnew = X_test[[0]]
+pred_mlpc = mlpc.predict(X_test)
+ynew = mlpc.predict(Xnew)
+if ynew == 0:
+    print(f"I am too poor to afford food")
+else:
+    print(f"I will survive")
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33)
 nb = GaussianNB()
