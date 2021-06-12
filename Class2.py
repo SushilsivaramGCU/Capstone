@@ -74,11 +74,13 @@ def plotting():
     hist_avg_fam.figure.savefig('.\outputs\histavgFamsize.png')
 
     plt.figure()
+
     hist_Cost_yr = dataSetUp['cost_yr'].plot.hist(bins=25, grid=True, rwidth=0.9, color='#607c8e')
     plt.title('Histogram of Yearly Cost of Food $')
     plt.xlabel('Yearly Cost $')
     plt.ylabel('Count')
     plt.grid(axis='y', alpha=0.5)
+    plt.figure(figsize=(8, 6))
     hist_Cost_yr.figure.savefig('.\outputs\histCost.png')
 
     plt.figure()
