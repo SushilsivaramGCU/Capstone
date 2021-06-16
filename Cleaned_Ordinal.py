@@ -150,7 +150,7 @@ def predictorImportance():
     # plot feature importance
     pyplot.bar([x for x in range(len(importance))], importance)
     pyplot.show()
-from tabulate import tabulate
+
 
 def vifCheck(dataSetUp):
     # VIF dataframe
@@ -170,12 +170,6 @@ showDataHeadAndInfo(datasetupUnprocessed,head_Value)
 
 # Exploratory plotting
 plotting(datasetupUnprocessed , "BeforeProcessing")
-
-
-
-
-
-
 
 # preProcessing
 preProcessing()
