@@ -108,7 +108,7 @@ def plotting(dataSetUp, state):
 
     plt.figure()
     scattermedian_income = dataSetUp.plot.scatter(c='DarkBlue', x='median_income', y = 'ave_fam_size' )
-    plt.title(f'scatterogram of Median Income vs Expenditure {state}')
+    plt.title(f'scatterogram of Median Income vs Family size {state}')
     plt.xlabel('Median Income in $')
     plt.ylabel('ave_fam_size')
     plt.grid(axis='y', alpha=0.5)
