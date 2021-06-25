@@ -48,8 +48,13 @@ Setup Reusable Functions
 def loadAndExtractData():
     global dataSetUp
     global datasetupUnprocessed
-    dataSetUp = pd.read_csv(CSVData)
-    datasetupUnprocessed = dataSetUp
+
+    def readCSV():
+        global dataSetUp, datasetupUnprocessed
+        dataSetUp = pd.read_csv(CSVData)
+        datasetupUnprocessed = dataSetUp
+
+    readCSV()
     keepcolumns = [#'LL95_affordability_ratio', 'UL95_affordability_ratio',
                    'race_eth_code','median_income','affordability_ratio', 'ave_fam_size']
     dataSetUp =dataSetUp.filter(keepcolumns)
@@ -58,6 +63,10 @@ def loadAndExtractData():
     dataSetUp= dataSetUp[(np.abs(stats.zscore(dataSetUp)) < 3).all(axis=1)]
     dataSetUp.to_csv('cleaned.csv', index=False)
     print (dataSetUp.shape)
+
+
+
+
 
 #print Info
 def showDataHeadAndInfo(data,headCount):
@@ -115,13 +124,6 @@ def plotting(dataSetUp, state):
     scattermedian_income.figure.savefig(f'.\outputs\scatterMedianIncomeVSFamilySize{state}.png')
 
     plt.figure()
-   # scattermedian_income = dataSetUp.plot.scatter(c='DarkBlue', x='ave_fam_size', y = 'race_eth_code' )
-   # plt.title(f'scatterogram of Family Size vs Expenditure {state}')
-   # plt.xlabel('Family Size')
-   # plt.ylabel('race_eth_code')
-   # plt.grid(axis='y', alpha=0.5)
-   # scattermedian_income.figure.savefig(f'.\outputs\scatterFamSizeVSExpenditure{state}.png')
-   # plt.show()
 
 def trainDataset():
     global X_train
@@ -131,7 +133,6 @@ def trainDataset():
     global sc
     # Train and test with random seed
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=testSize, random_state=randomstate)
-
     # Optimizing with standardScaler to minimize bias and normalize values
     sc = StandardScaler()
     X_train = sc.fit_transform(X_train)
@@ -165,6 +166,10 @@ def vifCheck(dataSetUp):
 # Load Data from CSV
 loadAndExtractData()
 
+print(datasetupUnprocessed.corr())
+
+
+
 # Print Info
 showDataHeadAndInfo(datasetupUnprocessed,head_Value)
 
@@ -173,6 +178,11 @@ plotting(datasetupUnprocessed , "BeforeProcessing")
 
 # preProcessing
 preProcessing()
+
+
+
+
+
 showDataHeadAndInfo(dataSetUp,head_Value)
 plotting(dataSetUp, "PostProcessing")
 vifCheck(dataSetUp)
