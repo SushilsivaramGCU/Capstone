@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-__author__ = "Sushil Sivaram, Megha Gubbala", "Sylvia Nanyangwe"
+__author__ = "Sushil Sivaram", "Megha Gubbala", "Sylvia Nanyangwe"
 __copyright__ = "N/A"
 __credits__ = ["Isac Artzi", "Dinesh Sthapit", "Ken Ferrell", "James Dzikunu", "Tracy Roth", "Renee Morales"]
 __license__ = "ECL"
